@@ -30,6 +30,8 @@ h3. Config the base directory
 h4. Other Settings
 
 * XSendCache: [NoCache|Private|Public] (defaults to NoCache)
+* XSendMime: False (Setting this to any value prevents the mime type being set)
+** This means the Content-Type header needs to be set by the application
 
 
 h3. Ensure IIS has access
