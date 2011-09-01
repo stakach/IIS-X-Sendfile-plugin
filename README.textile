@@ -1,0 +1,39 @@
+h1. X-Sendfile and X-Accel-Redirect Support for IIS 7.x
+
+This module provides basic support for X-Sendfile and X-Accel-Redirect headers.
+
+
+h2. Usage
+
+Either compile again for the target .net environment or use the supplied .net 4 dll
+
+h3. Install the DLL
+
+* Copy the assembly compiled to the /BIN directory located in the root of your application.
+** If this directory does not exist, create it.
+* Configure the module and handler to be loaded in the application. 
+** Open the IIS7 Administration tool
+** double-click on your server node in the left-hand tree view, then expand the "Sites" node, and click on the site or application to which you would like to add your module and handler.
+*** Select the "Modules" feature icon, then click the "Add Managed Module..." action, and in the resulting dialog box type in the module name (arbitrary) and the fully-qualified module type "XSendfile.XSendfileHttpModule".
+*** Press OK to add the module.
+
+
+h3. Config the base directory
+
+# Open the IIS manager
+# Select your web application
+# Double click application settings
+#* Click add...
+#* name: XSendDir
+#* value (for example): c:\inetpub\private
+
+h4. Other Settings
+
+* XSendCache: [NoCache|Private|Public] (defaults to NoCache)
+
+
+h3. Ensure IIS has access
+
+* Make sure the directory exists
+* You can run the following command to provide the IIS User read/write access
+** icacls c:\inetpub\private /grant BUILTIN\IIS_IUSRS:RW
