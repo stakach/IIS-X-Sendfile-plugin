@@ -8,6 +8,11 @@ using System.Web.Hosting;
 using System.Configuration;
 using System.IO;
 
+//
+// This feels hacky
+//
+using Microsoft.Web.Administration;
+
 namespace XSendfile
 {
     public class XSendfileHttpModule : IHttpModule
@@ -31,7 +36,7 @@ namespace XSendfile
             if (filePath != null)
             {
                 //
-                // Determine the file path and ready teh response
+                // Determine the file path and ready the response
                 //
                 filePath = Path.Combine(ConfigurationManager.AppSettings["XSendDir"], filePath);
                 response.Clear();                               // Clears output buffer
@@ -64,16 +69,17 @@ namespace XSendfile
                 //
                 if (ConfigurationManager.AppSettings["XSendMime"] == null)
                 {
-                    //System.Configuration.Configuration staticContent = ConfigurationManager.GetSection("staticContent");
-                    //var mimeMap = staticContent.GetCollection();
-                    //var mt = mimeMap.Where(
-                    //    a => (string)a.Attributes["fileExtension"].Value == ".pdf"
-                    //    ).FirstOrDefault();
+                    Microsoft.Web.Administration.ConfigurationSection staticContentSection = WebConfigurationManager.GetSection(HttpContext.Current, "system.webServer/staticContent");
+                    Microsoft.Web.Administration.ConfigurationElementCollection staticContentCollection = staticContentSection.GetCollection();
 
-                    //if (mt != null)
-                    //    response.ContentType = mt["mimeType"];
-                    //else
-                    response.ContentType = "application/octet-stream";
+                    var mt = staticContentCollection.Where(
+                        a => a.Attributes["fileExtension"].Value.ToString().ToLower() == file.Extension.ToLower()
+                        ).FirstOrDefault();
+
+                    if (mt != null)
+                        response.ContentType = mt.GetAttributeValue("mimeType").ToString();
+                    else
+                        response.ContentType = "application/octet-stream";
                 }
 
 
