@@ -18,7 +18,7 @@ h3. Install the DLL
 *** Press OK to add the module.
 
 
-h3. Config the base directory
+h3. Config the base directory if using X-Sendfile (optional)
 
 # Open the IIS manager
 # Select your web application
@@ -26,6 +26,18 @@ h3. Config the base directory
 #* Click add...
 #* name: XSendDir
 #* value (for example): c:\inetpub\private
+
+h3. Config location if using X-Accel-Redirect (optional)
+
+# Open the IIS manager
+# Select your web application
+# Double click application settings
+#* Click add...
+#** name: XAccelLocation
+#** value (for example): /virtual/path
+#* Clock add...
+#** name: XAccelRoot
+#** value (for example): c:/base/dir
 
 h4. Other Settings
 

@@ -38,7 +38,11 @@ namespace XSendfile
                 //
                 // Determine the file path and ready the response
                 //
-                filePath = Path.Combine(ConfigurationManager.AppSettings["XSendDir"], filePath);
+                if (ConfigurationManager.AppSettings["XSendDir"] != null)
+                    filePath = Path.Combine(ConfigurationManager.AppSettings["XSendDir"], filePath);    // if there is a base path set (file will be located above this)
+                else if (ConfigurationManager.AppSettings["XAccelLocation"] != null)
+                    filePath = filePath.Replace(ConfigurationManager.AppSettings["XAccelLocation"], ConfigurationManager.AppSettings["XAccelRoot"]);
+
                 response.Clear();                               // Clears output buffer
                 response.Headers.Remove("X-Sendfile");          // Remove unwanted headers
                 response.Headers.Remove("X-Accel-Redirect");
