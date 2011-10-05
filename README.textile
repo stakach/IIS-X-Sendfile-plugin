@@ -6,6 +6,8 @@ This module provides basic support for X-Sendfile and X-Accel-Redirect headers.
 h2. Usage
 
 Either compile again for the target .net environment or use the supplied .net 4 dll
+For more details on what the below settings mean and do, please consult Apache or NGinx documentation
+
 
 h3. Install the DLL
 
@@ -17,6 +19,7 @@ h3. Install the DLL
 *** Select the "Modules" feature icon, then click the "Add Managed Module..." action, and in the resulting dialog box type in the module name (arbitrary) and the fully-qualified module type "XSendfile.XSendfileHttpModule".
 *** Press OK to add the module.
 
+Select *one* of the optional configurations below:
 
 h3. Config the base directory if using X-Sendfile (optional)
 
@@ -35,15 +38,16 @@ h3. Config location if using X-Accel-Redirect (optional)
 #* Click add...
 #** name: XAccelLocation
 #** value (for example): /virtual/path
-#* Clock add...
+#* Click add...
 #** name: XAccelRoot
 #** value (for example): c:/base/dir
 
-h4. Other Settings
+h4. Common Settings
 
 * XSendCache: [NoCache|Private|Public] (defaults to NoCache)
-* XSendMime: False (Setting this to any value prevents the mime type being set)
-** This means the Content-Type header needs to be set by the application
+* XSendMime: False (defaults to null)
+** If this setting is not set then the mime type will be set using your IIS site mime settings
+** Setting this to false means the Content-Type header needs to be set by your application
 
 
 h3. Ensure IIS has access
