@@ -33,7 +33,16 @@ namespace XSendfile
             //
             // Check for the X-Send headers
             //
-            string filePath = response.Headers.Get("X-Sendfile");
+            bool remove = false;
+            // we check for temp first, so any software that wants to use it can, as a fallback,
+            // also set the regular x-sendfile header in case on that system this version of the
+            // dll is not deployed
+            string filePath = response.Headers.Get("X-Sendfile-Temporary");
+            if (filePath == null) {
+                filePath = response.Headers.Get("X-Sendfile");
+            } else {
+                remove = true;
+            }
             if (filePath == null)
                 filePath = response.Headers.Get("X-Accel-Redirect");
 
@@ -49,6 +58,7 @@ namespace XSendfile
 
                 response.Clear();                               // Clears output buffer
                 response.Headers.Remove("X-Sendfile");          // Remove unwanted headers
+                response.Headers.Remove("X-Sendfile-Temporary");
                 response.Headers.Remove("X-Accel-Redirect");
 
 
@@ -121,6 +131,18 @@ namespace XSendfile
                     //  Send the file without loading it into memory
                     //
                     response.TransmitFile(file.FullName);
+                    if (remove)
+                    {
+                        // note that the little Flush below causes the full file to load into 
+                        // IIS memory but we need that be able to delete it
+                        // Note that on many concurrent requests, that means each request
+                        // will load the full output into memory, which wil remain there for
+                        // a while because the client needs time to download. Unfortunately
+                        // I found no way to dispose of the file once the last byte has been
+                        // sent
+                        response.Flush();
+                        File.Delete(file.FullName);
+                    }
                 }
             }
         }
