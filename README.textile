@@ -2,6 +2,9 @@ h1. X-Sendfile and X-Accel-Redirect Support for IIS 7.x
 
 This module provides basic support for X-Sendfile and X-Accel-Redirect headers.
 
+As per Oct 7 2016, also X-Sendfile-Temporary is supported. When using this header, the file to be sent to the client is considered to be a temporary file and will be deleted from disc afterwards. In case you write software that can not know whether the installation supports this version of the module or the previous one without X-Sendfile-Temporary support, it can use both headers. The old version of the module will then pick up the X-sendfile header and the current version will pick up the X-Sendfile-Temporary method, so this provides a fallback mechanism.
+
+Note that X-Sendfile-Temporary keeps the thread running until the result is fully streamed to the client. On intensive use, this can lead to thread shortages. When the CLR thread pool becomes exhausted, requests will start to queue, causing a hang.
 
 h2. Usage
 
